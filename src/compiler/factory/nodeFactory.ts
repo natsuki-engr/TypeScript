@@ -231,6 +231,7 @@ import {
     JSDocLink,
     JSDocLinkCode,
     JSDocLinkPlain,
+    JSDocLocalTag,
     JSDocMemberName,
     JSDocNamepathType,
     JSDocNameReference,
@@ -951,6 +952,12 @@ export function createNodeFactory(flags: NodeFactoryFlags, baseFactory: BaseNode
         },
         get updateJSDocSatisfiesTag() {
             return getJSDocTypeLikeTagUpdateFunction<JSDocSatisfiesTag>(SyntaxKind.JSDocSatisfiesTag);
+        },
+        get createJSDocLocalTag() {
+            return getJSDocSimpleTagCreateFunction<JSDocLocalTag>(SyntaxKind.JSDocLocalTag);
+        },
+        get updateJSDocLocalTag() {
+            return getJSDocSimpleTagUpdateFunction<JSDocLocalTag>(SyntaxKind.JSDocLocalTag);
         },
 
         createJSDocEnumTag,
@@ -7227,6 +7234,8 @@ function getDefaultTagNameForKind(kind: JSDocTag["kind"]): string {
             return "implements";
         case SyntaxKind.JSDocImportTag:
             return "import";
+        case SyntaxKind.JSDocLocalTag:
+            return "local";
         default:
             return Debug.fail(`Unsupported kind: ${Debug.formatSyntaxKind(kind)}`);
     }

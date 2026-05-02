@@ -9609,6 +9609,16 @@ export function createTypeChecker(host: TypeCheckerHost): TypeChecker {
                 if (visitedSymbols.has(getSymbolId(visitedSym))) {
                     return; // Already printed
                 }
+
+                if (
+                    !isPrivate && symbol.flags & SymbolFlags.TypeAlias && symbol.declarations?.some(d =>
+                        (isJSDocTypedefTag(d) || isJSDocCallbackTag(d)) &&
+                        d.parent.tags?.some((tag: Node) => tag.kind === SyntaxKind.JSDocLocalTag)
+                    )
+                ) {
+                    includePrivateSymbol(symbol);
+                    return;
+                }
                 visitedSymbols.add(getSymbolId(visitedSym));
                 // Only actually serialize symbols within the correct enclosing declaration, otherwise do nothing with the out-of-context symbol
                 const skipMembershipCheck = !isPrivate; // We only call this on exported symbols when we know they're in the correct scope
@@ -9633,6 +9643,7 @@ export function createTypeChecker(host: TypeCheckerHost): TypeChecker {
             function serializeSymbolWorker(symbol: Symbol, isPrivate: boolean, propertyAsAlias: boolean, escapedSymbolName = symbol.escapedName): void {
                 const symbolName = unescapeLeadingUnderscores(escapedSymbolName);
                 const isDefault = escapedSymbolName === InternalSymbolName.Default;
+
                 if (isPrivate && !(context.flags & NodeBuilderFlags.AllowAnonymousIdentifier) && isStringANonContextualKeyword(symbolName) && !isDefault) {
                     // Oh no. We cannot use this symbol's name as it's name... It's likely some jsdoc had an invalid name like `export` or `default` :(
                     context.encounteredError = true;
@@ -11339,7 +11350,13 @@ export function createTypeChecker(host: TypeCheckerHost): TypeChecker {
                 case SyntaxKind.JSDocEnumTag:
                     // Top-level jsdoc type aliases are considered exported
                     // First parent is comment node, second is hosting declaration or token; we only care about those tokens or declarations whose parent is a source file
-                    return !!(node.parent && node.parent.parent && node.parent.parent.parent && isSourceFile(node.parent.parent.parent));
+                    if (!(node.parent && node.parent.parent && node.parent.parent.parent && isSourceFile(node.parent.parent.parent))) {
+                        return false;
+                    }
+                    if ((node.parent as JSDoc).tags?.some(tag => tag.kind === SyntaxKind.JSDocLocalTag)) {
+                        return false;
+                    }
+                    return true;
                 case SyntaxKind.BindingElement:
                     return isDeclarationVisible(node.parent.parent);
                 case SyntaxKind.VariableDeclaration:

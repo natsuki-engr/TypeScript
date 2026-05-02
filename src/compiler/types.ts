@@ -441,6 +441,7 @@ export const enum SyntaxKind {
     JSDocThrowsTag,
     JSDocSatisfiesTag,
     JSDocImportTag,
+    JSDocLocalTag,
 
     // Synthesized list
     SyntaxList,
@@ -484,9 +485,9 @@ export const enum SyntaxKind {
     LastStatement = DebuggerStatement,
     FirstNode = QualifiedName,
     FirstJSDocNode = JSDocTypeExpression,
-    LastJSDocNode = JSDocImportTag,
+    LastJSDocNode = JSDocLocalTag,
     FirstJSDocTagNode = JSDocTag,
-    LastJSDocTagNode = JSDocImportTag,
+    LastJSDocTagNode = JSDocLocalTag,
     /** @internal */ FirstContextualKeyword = AbstractKeyword,
     /** @internal */ LastContextualKeyword = LastKeyword,
 }
@@ -4142,6 +4143,10 @@ export interface JSDocImportTag extends JSDocTag {
     readonly importClause?: ImportClause;
     readonly moduleSpecifier: Expression;
     readonly attributes?: ImportAttributes;
+}
+
+export interface JSDocLocalTag extends JSDocTag {
+    readonly kind: SyntaxKind.JSDocLocalTag;
 }
 
 // NOTE: Ensure this is up-to-date with src/debug/debug.ts
@@ -9216,6 +9221,8 @@ export interface NodeFactory {
     updateJSDocSatisfiesTag(node: JSDocSatisfiesTag, tagName: Identifier | undefined, typeExpression: JSDocTypeExpression, comment: string | NodeArray<JSDocComment> | undefined): JSDocSatisfiesTag;
     createJSDocImportTag(tagName: Identifier | undefined, importClause: ImportClause | undefined, moduleSpecifier: Expression, attributes?: ImportAttributes, comment?: string | NodeArray<JSDocComment>): JSDocImportTag;
     updateJSDocImportTag(node: JSDocImportTag, tagName: Identifier | undefined, importClause: ImportClause | undefined, moduleSpecifier: Expression, attributes: ImportAttributes | undefined, comment: string | NodeArray<JSDocComment> | undefined): JSDocImportTag;
+    createJSDocLocalTag(tagName: Identifier | undefined, comment?: string | NodeArray<JSDocComment>): JSDocLocalTag;
+    updateJSDocLocalTag(node: JSDocLocalTag, tagName: Identifier | undefined, comment?: string | NodeArray<JSDocComment>): JSDocLocalTag;
     createJSDocText(text: string): JSDocText;
     updateJSDocText(node: JSDocText, text: string): JSDocText;
     createJSDocComment(comment?: string | NodeArray<JSDocComment> | undefined, tags?: readonly JSDocTag[] | undefined): JSDoc;

@@ -9177,6 +9177,9 @@ namespace Parser {
                     case "import":
                         tag = parseImportTag(start, tagName, margin, indentText);
                         break;
+                    case "local":
+                        tag = parseSimpleTag(start, factory.createJSDocLocalTag, tagName, margin, indentText);
+                        break;
                     default:
                         tag = parseUnknownTag(start, tagName, margin, indentText);
                         break;
