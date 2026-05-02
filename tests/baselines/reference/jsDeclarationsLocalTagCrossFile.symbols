@@ -1,0 +1,59 @@
+//// [tests/cases/conformance/jsdoc/declarations/jsDeclarationsLocalTagCrossFile.ts] ////
+
+=== types.js ===
+export {};
+
+/**
+ * @local
+ * @typedef {{ x: number, y: number }} LocalPoint
+ */
+
+/**
+ * @typedef {{ label: string }} PublicLabel
+ */
+
+/** @param {LocalPoint} p */
+export function translate(p) {
+>translate : Symbol(translate, Decl(types.js, 0, 10))
+>p : Symbol(p, Decl(types.js, 12, 26))
+
+    return { x: p.x + 1, y: p.y + 1 };
+>x : Symbol(x, Decl(types.js, 13, 12))
+>p.x : Symbol(x, Decl(types.js, 4, 14))
+>p : Symbol(p, Decl(types.js, 12, 26))
+>x : Symbol(x, Decl(types.js, 4, 14))
+>y : Symbol(y, Decl(types.js, 13, 24))
+>p.y : Symbol(y, Decl(types.js, 4, 25))
+>p : Symbol(p, Decl(types.js, 12, 26))
+>y : Symbol(y, Decl(types.js, 4, 25))
+}
+
+=== consumer.js ===
+import { translate } from "./types";
+>translate : Symbol(translate, Decl(consumer.js, 0, 8))
+
+/**
+ * @local
+ * @typedef {{ x: number, y: number }} ConsumerPoint
+ */
+
+/** @type {ConsumerPoint} */
+const origin = { x: 0, y: 0 };
+>origin : Symbol(origin, Decl(consumer.js, 8, 5))
+>x : Symbol(x, Decl(consumer.js, 8, 16))
+>y : Symbol(y, Decl(consumer.js, 8, 22))
+
+/** @returns {import("./types").LocalPoint} */
+export function getOrigin() {
+>getOrigin : Symbol(getOrigin, Decl(consumer.js, 8, 30))
+
+    return origin;
+>origin : Symbol(origin, Decl(consumer.js, 8, 5))
+}
+
+export const moved = translate({ x: 1, y: 2 });
+>moved : Symbol(moved, Decl(consumer.js, 15, 12))
+>translate : Symbol(translate, Decl(consumer.js, 0, 8))
+>x : Symbol(x, Decl(consumer.js, 15, 32))
+>y : Symbol(y, Decl(consumer.js, 15, 38))
+
