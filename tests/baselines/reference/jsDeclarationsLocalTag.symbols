@@ -1,0 +1,216 @@
+//// [tests/cases/conformance/jsdoc/declarations/jsDeclarationsLocalTag.ts] ////
+
+=== localTag.js ===
+export {};
+
+/**
+ * @local
+ * @typedef {{ x: number, y: number }} Point
+ */
+
+/**
+ * @typedef {string | number} PublicType
+ */
+
+/** @param {Point} p */
+export function move(p) {
+>move : Symbol(move, Decl(localTag.js, 0, 10))
+>p : Symbol(p, Decl(localTag.js, 12, 21))
+
+    return p;
+>p : Symbol(p, Decl(localTag.js, 12, 21))
+}
+
+/**
+ * @returns {Point}
+ */
+export function origin() {
+>origin : Symbol(origin, Decl(localTag.js, 14, 1))
+
+    return { x: 0, y: 0 };
+>x : Symbol(x, Decl(localTag.js, 20, 12))
+>y : Symbol(y, Decl(localTag.js, 20, 18))
+}
+
+export class Shape {
+>Shape : Symbol(Shape, Decl(localTag.js, 21, 1))
+
+    constructor() {
+        /** @type {Point} */
+        this.position = { x: 0, y: 0 };
+>this.position : Symbol(Shape.position, Decl(localTag.js, 24, 19))
+>this : Symbol(Shape, Decl(localTag.js, 21, 1))
+>position : Symbol(Shape.position, Decl(localTag.js, 24, 19))
+>x : Symbol(x, Decl(localTag.js, 26, 25))
+>y : Symbol(y, Decl(localTag.js, 26, 31))
+    }
+}
+
+/**
+ * @local
+ * @private
+ * @typedef {{ secret: string }} InternalConfig
+ */
+
+/**
+ * @local
+ * @callback Predicate
+ * @param {number} value
+ * @returns {boolean}
+ */
+
+/** @param {Predicate} fn */
+export function filter(fn) {
+>filter : Symbol(filter, Decl(localTag.js, 28, 1))
+>fn : Symbol(fn, Decl(localTag.js, 44, 23))
+
+    return fn(42);
+>fn : Symbol(fn, Decl(localTag.js, 44, 23))
+}
+
+// --- Tag order reversed: @typedef before @local ---
+
+/**
+ * @typedef {{ width: number, height: number }} Size
+ * @local
+ */
+
+/** @returns {Size} */
+export function defaultSize() {
+>defaultSize : Symbol(defaultSize, Decl(localTag.js, 46, 1))
+
+    return { width: 100, height: 100 };
+>width : Symbol(width, Decl(localTag.js, 57, 12))
+>height : Symbol(height, Decl(localTag.js, 57, 24))
+}
+
+// --- Two typedefs in one JSDoc block, only one is @local ---
+
+/**
+ * @local
+ * @typedef {{ r: number, g: number, b: number }} RGB
+ */
+/**
+ * @typedef {{ name: string }} NamedColor
+ */
+
+/** @param {RGB} rgb @returns {NamedColor} */
+export function toNamedColor(rgb) {
+>toNamedColor : Symbol(toNamedColor, Decl(localTag.js, 58, 1))
+>rgb : Symbol(rgb, Decl(localTag.js, 71, 29))
+
+    return { name: "red" };
+>name : Symbol(name, Decl(localTag.js, 72, 12))
+}
+
+// --- @local typedef referencing another @local typedef ---
+
+/**
+ * @local
+ * @typedef {{ start: Point, end: Point }} Line
+ */
+
+/** @returns {Line} */
+export function diagonal() {
+>diagonal : Symbol(diagonal, Decl(localTag.js, 73, 1))
+
+    return { start: { x: 0, y: 0 }, end: { x: 1, y: 1 } };
+>start : Symbol(start, Decl(localTag.js, 84, 12))
+>x : Symbol(x, Decl(localTag.js, 84, 21))
+>y : Symbol(y, Decl(localTag.js, 84, 27))
+>end : Symbol(end, Decl(localTag.js, 84, 35))
+>x : Symbol(x, Decl(localTag.js, 84, 42))
+>y : Symbol(y, Decl(localTag.js, 84, 48))
+}
+
+// --- @local typedef used with exported variable via @type ---
+
+/**
+ * @local
+ * @typedef {{ host: string, port: number }} ServerConfig
+ */
+
+/** @type {ServerConfig} */
+export const config = { host: "localhost", port: 3000 };
+>config : Symbol(config, Decl(localTag.js, 95, 12))
+>host : Symbol(host, Decl(localTag.js, 95, 23))
+>port : Symbol(port, Decl(localTag.js, 95, 42))
+
+// --- @local with @template (generic) ---
+
+/**
+ * @local
+ * @template T
+ * @typedef {{ value: T, error: string | null }} Result
+ */
+
+/** @returns {Result<number>} */
+export function compute() {
+>compute : Symbol(compute, Decl(localTag.js, 95, 56))
+
+    return { value: 42, error: null };
+>value : Symbol(value, Decl(localTag.js, 107, 12))
+>error : Symbol(error, Decl(localTag.js, 107, 23))
+}
+
+// --- Two typedefs in the SAME JSDoc block: @local applies to entire block ---
+
+/**
+ * @local
+ * @typedef {{ r: number, g: number, b: number }} LocalColor
+ * @typedef {{ name: string }} AlsoLocalColor
+ */
+
+/** @param {LocalColor} c @returns {AlsoLocalColor} */
+export function describeColor(c) {
+>describeColor : Symbol(describeColor, Decl(localTag.js, 108, 1))
+>c : Symbol(c, Decl(localTag.js, 119, 30))
+
+    return { name: "red" };
+>name : Symbol(name, Decl(localTag.js, 120, 12))
+}
+
+// --- @local + @enum ---
+
+/**
+ * @local
+ * @enum {number}
+ */
+const Status = {
+>Status : Symbol(Status, Decl(localTag.js, 129, 5), Decl(localTag.js, 127, 3))
+
+    Active: 0,
+>Active : Symbol(Active, Decl(localTag.js, 129, 16))
+
+    Inactive: 1,
+>Inactive : Symbol(Inactive, Decl(localTag.js, 130, 14))
+
+};
+
+/** @param {Status} s */
+export function isActive(s) {
+>isActive : Symbol(isActive, Decl(localTag.js, 132, 2))
+>s : Symbol(s, Decl(localTag.js, 135, 25))
+
+    return s === Status.Active;
+>s : Symbol(s, Decl(localTag.js, 135, 25))
+>Status.Active : Symbol(Active, Decl(localTag.js, 129, 16))
+>Status : Symbol(Status, Decl(localTag.js, 129, 5), Decl(localTag.js, 127, 3))
+>Active : Symbol(Active, Decl(localTag.js, 129, 16))
+}
+
+// --- @local on unrelated tag (should be harmless) ---
+
+/**
+ * @local
+ * @param {number} x
+ * @returns {number}
+ */
+export function double(x) {
+>double : Symbol(double, Decl(localTag.js, 137, 1))
+>x : Symbol(x, Decl(localTag.js, 146, 23))
+
+    return x * 2;
+>x : Symbol(x, Decl(localTag.js, 146, 23))
+}
+
