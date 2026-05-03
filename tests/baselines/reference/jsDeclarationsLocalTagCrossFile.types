@@ -1,0 +1,103 @@
+//// [tests/cases/conformance/jsdoc/declarations/jsDeclarationsLocalTagCrossFile.ts] ////
+
+=== types.js ===
+export {};
+
+/**
+ * @local
+ * @typedef {{ x: number, y: number }} LocalPoint
+ */
+
+/**
+ * @typedef {{ label: string }} PublicLabel
+ */
+
+/** @param {LocalPoint} p */
+export function translate(p) {
+>translate : (p: LocalPoint) => { x: number; y: number; }
+>          : ^ ^^          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>p : LocalPoint
+>  : ^^^^^^^^^^
+
+    return { x: p.x + 1, y: p.y + 1 };
+>{ x: p.x + 1, y: p.y + 1 } : { x: number; y: number; }
+>                           : ^^^^^^^^^^^^^^^^^^^^^^^^^
+>x : number
+>  : ^^^^^^
+>p.x + 1 : number
+>        : ^^^^^^
+>p.x : number
+>    : ^^^^^^
+>p : LocalPoint
+>  : ^^^^^^^^^^
+>x : number
+>  : ^^^^^^
+>1 : 1
+>  : ^
+>y : number
+>  : ^^^^^^
+>p.y + 1 : number
+>        : ^^^^^^
+>p.y : number
+>    : ^^^^^^
+>p : LocalPoint
+>  : ^^^^^^^^^^
+>y : number
+>  : ^^^^^^
+>1 : 1
+>  : ^
+}
+
+=== consumer.js ===
+import { translate } from "./types";
+>translate : (p: LocalPoint) => { x: number; y: number; }
+>          : ^ ^^          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/**
+ * @local
+ * @typedef {{ x: number, y: number }} ConsumerPoint
+ */
+
+/** @type {ConsumerPoint} */
+const origin = { x: 0, y: 0 };
+>origin : ConsumerPoint
+>       : ^^^^^^^^^^^^^
+>{ x: 0, y: 0 } : { x: number; y: number; }
+>               : ^^^^^^^^^^^^^^^^^^^^^^^^^
+>x : number
+>  : ^^^^^^
+>0 : 0
+>  : ^
+>y : number
+>  : ^^^^^^
+>0 : 0
+>  : ^
+
+/** @returns {import("./types").LocalPoint} */
+export function getOrigin() {
+>getOrigin : () => import("./types").LocalPoint
+>          : ^^^^^^                            
+
+    return origin;
+>origin : ConsumerPoint
+>       : ^^^^^^^^^^^^^
+}
+
+export const moved = translate({ x: 1, y: 2 });
+>moved : { x: number; y: number; }
+>      : ^^^^^^^^^^^^^^^^^^^^^^^^^
+>translate({ x: 1, y: 2 }) : { x: number; y: number; }
+>                          : ^^^^^^^^^^^^^^^^^^^^^^^^^
+>translate : (p: LocalPoint) => { x: number; y: number; }
+>          : ^ ^^          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>{ x: 1, y: 2 } : { x: number; y: number; }
+>               : ^^^^^^^^^^^^^^^^^^^^^^^^^
+>x : number
+>  : ^^^^^^
+>1 : 1
+>  : ^
+>y : number
+>  : ^^^^^^
+>2 : 2
+>  : ^
+

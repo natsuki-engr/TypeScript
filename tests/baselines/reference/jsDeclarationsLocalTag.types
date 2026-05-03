@@ -1,0 +1,333 @@
+//// [tests/cases/conformance/jsdoc/declarations/jsDeclarationsLocalTag.ts] ////
+
+=== localTag.js ===
+export {};
+
+/**
+ * @local
+ * @typedef {{ x: number, y: number }} Point
+ */
+
+/**
+ * @typedef {string | number} PublicType
+ */
+
+/** @param {Point} p */
+export function move(p) {
+>move : (p: Point) => Point
+>     : ^ ^^     ^^^^^^^^^^
+>p : Point
+>  : ^^^^^
+
+    return p;
+>p : Point
+>  : ^^^^^
+}
+
+/**
+ * @returns {Point}
+ */
+export function origin() {
+>origin : () => Point
+>       : ^^^^^^     
+
+    return { x: 0, y: 0 };
+>{ x: 0, y: 0 } : { x: number; y: number; }
+>               : ^^^^^^^^^^^^^^^^^^^^^^^^^
+>x : number
+>  : ^^^^^^
+>0 : 0
+>  : ^
+>y : number
+>  : ^^^^^^
+>0 : 0
+>  : ^
+}
+
+export class Shape {
+>Shape : Shape
+>      : ^^^^^
+
+    constructor() {
+        /** @type {Point} */
+        this.position = { x: 0, y: 0 };
+>this.position = { x: 0, y: 0 } : { x: number; y: number; }
+>                               : ^^^^^^^^^^^^^^^^^^^^^^^^^
+>this.position : Point
+>              : ^^^^^
+>this : this
+>     : ^^^^
+>position : Point
+>         : ^^^^^
+>{ x: 0, y: 0 } : { x: number; y: number; }
+>               : ^^^^^^^^^^^^^^^^^^^^^^^^^
+>x : number
+>  : ^^^^^^
+>0 : 0
+>  : ^
+>y : number
+>  : ^^^^^^
+>0 : 0
+>  : ^
+    }
+}
+
+/**
+ * @local
+ * @private
+ * @typedef {{ secret: string }} InternalConfig
+ */
+
+/**
+ * @local
+ * @callback Predicate
+ * @param {number} value
+ * @returns {boolean}
+ */
+
+/** @param {Predicate} fn */
+export function filter(fn) {
+>filter : (fn: Predicate) => boolean
+>       : ^  ^^         ^^^^^^^^^^^^
+>fn : Predicate
+>   : ^^^^^^^^^
+
+    return fn(42);
+>fn(42) : boolean
+>       : ^^^^^^^
+>fn : Predicate
+>   : ^^^^^^^^^
+>42 : 42
+>   : ^^
+}
+
+// --- Tag order reversed: @typedef before @local ---
+
+/**
+ * @typedef {{ width: number, height: number }} Size
+ * @local
+ */
+
+/** @returns {Size} */
+export function defaultSize() {
+>defaultSize : () => Size
+>            : ^^^^^^    
+
+    return { width: 100, height: 100 };
+>{ width: 100, height: 100 } : { width: number; height: number; }
+>                            : ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>width : number
+>      : ^^^^^^
+>100 : 100
+>    : ^^^
+>height : number
+>       : ^^^^^^
+>100 : 100
+>    : ^^^
+}
+
+// --- Two typedefs in one JSDoc block, only one is @local ---
+
+/**
+ * @local
+ * @typedef {{ r: number, g: number, b: number }} RGB
+ */
+/**
+ * @typedef {{ name: string }} NamedColor
+ */
+
+/** @param {RGB} rgb @returns {NamedColor} */
+export function toNamedColor(rgb) {
+>toNamedColor : (rgb: RGB) => NamedColor
+>             : ^   ^^   ^^^^^          
+>rgb : RGB
+>    : ^^^
+
+    return { name: "red" };
+>{ name: "red" } : { name: string; }
+>                : ^^^^^^^^^^^^^^^^^
+>name : string
+>     : ^^^^^^
+>"red" : "red"
+>      : ^^^^^
+}
+
+// --- @local typedef referencing another @local typedef ---
+
+/**
+ * @local
+ * @typedef {{ start: Point, end: Point }} Line
+ */
+
+/** @returns {Line} */
+export function diagonal() {
+>diagonal : () => Line
+>         : ^^^^^^    
+
+    return { start: { x: 0, y: 0 }, end: { x: 1, y: 1 } };
+>{ start: { x: 0, y: 0 }, end: { x: 1, y: 1 } } : { start: { x: number; y: number; }; end: { x: number; y: number; }; }
+>                                               : ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>start : { x: number; y: number; }
+>      : ^^^^^^^^^^^^^^^^^^^^^^^^^
+>{ x: 0, y: 0 } : { x: number; y: number; }
+>               : ^^^^^^^^^^^^^^^^^^^^^^^^^
+>x : number
+>  : ^^^^^^
+>0 : 0
+>  : ^
+>y : number
+>  : ^^^^^^
+>0 : 0
+>  : ^
+>end : { x: number; y: number; }
+>    : ^^^^^^^^^^^^^^^^^^^^^^^^^
+>{ x: 1, y: 1 } : { x: number; y: number; }
+>               : ^^^^^^^^^^^^^^^^^^^^^^^^^
+>x : number
+>  : ^^^^^^
+>1 : 1
+>  : ^
+>y : number
+>  : ^^^^^^
+>1 : 1
+>  : ^
+}
+
+// --- @local typedef used with exported variable via @type ---
+
+/**
+ * @local
+ * @typedef {{ host: string, port: number }} ServerConfig
+ */
+
+/** @type {ServerConfig} */
+export const config = { host: "localhost", port: 3000 };
+>config : ServerConfig
+>       : ^^^^^^^^^^^^
+>{ host: "localhost", port: 3000 } : { host: string; port: number; }
+>                                  : ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>host : string
+>     : ^^^^^^
+>"localhost" : "localhost"
+>            : ^^^^^^^^^^^
+>port : number
+>     : ^^^^^^
+>3000 : 3000
+>     : ^^^^
+
+// --- @local with @template (generic) ---
+
+/**
+ * @local
+ * @template T
+ * @typedef {{ value: T, error: string | null }} Result
+ */
+
+/** @returns {Result<number>} */
+export function compute() {
+>compute : () => Result<number>
+>        : ^^^^^^              
+
+    return { value: 42, error: null };
+>{ value: 42, error: null } : { value: number; error: null; }
+>                           : ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>value : number
+>      : ^^^^^^
+>42 : 42
+>   : ^^
+>error : null
+>      : ^^^^
+}
+
+// --- Two typedefs in the SAME JSDoc block: @local applies to entire block ---
+
+/**
+ * @local
+ * @typedef {{ r: number, g: number, b: number }} LocalColor
+ * @typedef {{ name: string }} AlsoLocalColor
+ */
+
+/** @param {LocalColor} c @returns {AlsoLocalColor} */
+export function describeColor(c) {
+>describeColor : (c: LocalColor) => AlsoLocalColor
+>              : ^ ^^          ^^^^^              
+>c : LocalColor
+>  : ^^^^^^^^^^
+
+    return { name: "red" };
+>{ name: "red" } : { name: string; }
+>                : ^^^^^^^^^^^^^^^^^
+>name : string
+>     : ^^^^^^
+>"red" : "red"
+>      : ^^^^^
+}
+
+// --- @local + @enum ---
+
+/**
+ * @local
+ * @enum {number}
+ */
+const Status = {
+>Status : { Active: number; Inactive: number; }
+>       : ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>{    Active: 0,    Inactive: 1,} : { Active: number; Inactive: number; }
+>                                 : ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+    Active: 0,
+>Active : number
+>       : ^^^^^^
+>0 : 0
+>  : ^
+
+    Inactive: 1,
+>Inactive : number
+>         : ^^^^^^
+>1 : 1
+>  : ^
+
+};
+
+/** @param {Status} s */
+export function isActive(s) {
+>isActive : (s: number) => boolean
+>         : ^ ^^^^^^^^^^^^^^^^^^^^
+>s : number
+>  : ^^^^^^
+
+    return s === Status.Active;
+>s === Status.Active : boolean
+>                    : ^^^^^^^
+>s : number
+>  : ^^^^^^
+>Status.Active : number
+>              : ^^^^^^
+>Status : { Active: number; Inactive: number; }
+>       : ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>Active : number
+>       : ^^^^^^
+}
+
+// --- @local on unrelated tag (should be harmless) ---
+
+/**
+ * @local
+ * @param {number} x
+ * @returns {number}
+ */
+export function double(x) {
+>double : (x: number) => number
+>       : ^ ^^      ^^^^^      
+>x : number
+>  : ^^^^^^
+
+    return x * 2;
+>x * 2 : number
+>      : ^^^^^^
+>x : number
+>  : ^^^^^^
+>2 : 2
+>  : ^
+}
+

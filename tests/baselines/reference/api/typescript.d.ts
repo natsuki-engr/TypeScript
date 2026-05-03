@@ -4037,13 +4037,14 @@ declare namespace ts {
         JSDocThrowsTag = 350,
         JSDocSatisfiesTag = 351,
         JSDocImportTag = 352,
-        SyntaxList = 353,
-        NotEmittedStatement = 354,
-        NotEmittedTypeElement = 355,
-        PartiallyEmittedExpression = 356,
-        CommaListExpression = 357,
-        SyntheticReferenceExpression = 358,
-        Count = 359,
+        JSDocLocalTag = 353,
+        SyntaxList = 354,
+        NotEmittedStatement = 355,
+        NotEmittedTypeElement = 356,
+        PartiallyEmittedExpression = 357,
+        CommaListExpression = 358,
+        SyntheticReferenceExpression = 359,
+        Count = 360,
         FirstAssignment = 64,
         LastAssignment = 79,
         FirstCompoundAssignment = 65,
@@ -4072,9 +4073,9 @@ declare namespace ts {
         LastStatement = 260,
         FirstNode = 167,
         FirstJSDocNode = 310,
-        LastJSDocNode = 352,
+        LastJSDocNode = 353,
         FirstJSDocTagNode = 328,
-        LastJSDocTagNode = 352,
+        LastJSDocTagNode = 353,
     }
     type TriviaSyntaxKind = SyntaxKind.SingleLineCommentTrivia | SyntaxKind.MultiLineCommentTrivia | SyntaxKind.NewLineTrivia | SyntaxKind.WhitespaceTrivia | SyntaxKind.ShebangTrivia | SyntaxKind.ConflictMarkerTrivia;
     type LiteralSyntaxKind = SyntaxKind.NumericLiteral | SyntaxKind.BigIntLiteral | SyntaxKind.StringLiteral | SyntaxKind.JsxText | SyntaxKind.JsxTextAllWhiteSpaces | SyntaxKind.RegularExpressionLiteral | SyntaxKind.NoSubstitutionTemplateLiteral;
@@ -5896,6 +5897,9 @@ declare namespace ts {
         readonly importClause?: ImportClause;
         readonly moduleSpecifier: Expression;
         readonly attributes?: ImportAttributes;
+    }
+    interface JSDocLocalTag extends JSDocTag {
+        readonly kind: SyntaxKind.JSDocLocalTag;
     }
     type FlowType = Type | IncompleteType;
     interface IncompleteType {
@@ -7863,6 +7867,8 @@ declare namespace ts {
         updateJSDocSatisfiesTag(node: JSDocSatisfiesTag, tagName: Identifier | undefined, typeExpression: JSDocTypeExpression, comment: string | NodeArray<JSDocComment> | undefined): JSDocSatisfiesTag;
         createJSDocImportTag(tagName: Identifier | undefined, importClause: ImportClause | undefined, moduleSpecifier: Expression, attributes?: ImportAttributes, comment?: string | NodeArray<JSDocComment>): JSDocImportTag;
         updateJSDocImportTag(node: JSDocImportTag, tagName: Identifier | undefined, importClause: ImportClause | undefined, moduleSpecifier: Expression, attributes: ImportAttributes | undefined, comment: string | NodeArray<JSDocComment> | undefined): JSDocImportTag;
+        createJSDocLocalTag(tagName: Identifier | undefined, comment?: string | NodeArray<JSDocComment>): JSDocLocalTag;
+        updateJSDocLocalTag(node: JSDocLocalTag, tagName: Identifier | undefined, comment?: string | NodeArray<JSDocComment>): JSDocLocalTag;
         createJSDocText(text: string): JSDocText;
         updateJSDocText(node: JSDocText, text: string): JSDocText;
         createJSDocComment(comment?: string | NodeArray<JSDocComment> | undefined, tags?: readonly JSDocTag[] | undefined): JSDoc;
